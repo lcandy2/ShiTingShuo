@@ -3,11 +3,12 @@ import {input_in, dragTo, getRanWord, getRanPhrase, sleep, click_btn} from './ut
 
 // 填空题
 export async function doTianKone() {
+    let inputs = $('.lib-fill-blank-do-input-left');
+
     for (let i = 0; i < user_config.loop; i++) {
         console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
 
         // 先填写随机单词，获得答案
-        let inputs = $('.lib-fill-blank-do-input-left');
         $.each(inputs, function(i,item){
             input_in(item, getRanWord());
         });
@@ -19,8 +20,7 @@ export async function doTianKone() {
         if (i < user_config.loop - 1) {
             console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
 
-            answerbox = $('.lib-drag-answer-list');
-            boxes = $('.lib-drag-box');
+            inputs = $('.lib-fill-blank-do-input-left');
 
             await click_btn(); // Retry
             await sleep(submitDelay());
@@ -98,9 +98,6 @@ export async function doSingleChoose() {
         if (i < user_config.loop - 1) {
             console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
 
-            answerbox = $('.lib-drag-answer-list');
-            boxes = $('.lib-drag-box');
-
             await click_btn(); // Retry
             await sleep(submitDelay());
         }
@@ -137,9 +134,6 @@ export async function doDropChoose() {
 
         if (i < user_config.loop - 1) {
             console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
-
-            answerbox = $('.lib-drag-answer-list');
-            boxes = $('.lib-drag-box');
 
             await click_btn(); // Retry
             await sleep(submitDelay());
