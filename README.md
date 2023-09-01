@@ -2,11 +2,13 @@
 
 # 视听说自动答题挂课助手
 
-> 适用于清华英语社 - 视听说
-
-现已更新 v4.0 重构代码, 优化 UI, 且已完全支持语音题目自动回答
-
 [GitHub](https://github.com/lcandy2/ShiTingShuo) | [GreasyFork](https://greasyfork.org/zh-CN/scripts/474368-%E6%B8%85%E5%8D%8E%E7%A4%BE%E8%A7%86%E5%90%AC%E8%AF%B4-%E8%87%AA%E5%8A%A8%E7%AD%94%E9%A2%98-2023)
+
+> 适用于清华英语社 - 视听说
+>
+> 现已更新 2023 最新适配版, 修复已知问题, 且已完全支持语音题目自动回答和多次提交后获取答案
+> 
+> 本脚本基于[此脚本](https://greasyfork.org/zh-CN/scripts/418876-%E6%B8%85%E5%8D%8E%E7%A4%BE%E8%A7%86%E5%90%AC%E8%AF%B4-%E8%87%AA%E5%8A%A8%E7%AD%94%E9%A2%98)
 
 ## 使用
 
@@ -66,5 +68,12 @@ $ yarn build
 
 窗口太小就会这样，全屏即可
 
+## 鸣谢
 
+这些人直接或间接对此脚本提供了帮助：
+[@hyun](https://greasyfork.org/zh-CN/users/718868-hyun)
+[@Atarsei](https://greasyfork.org/zh-CN/users/885971-atarsei)
+[@paleblue111](https://greasyfork.org/zh-CN/users/916139-paleblue111)
+[@amitopia](https://greasyfork.org/zh-CN/users/918781-amitopia)
+[@mfac](https://greasyfork.org/zh-CN/users/966066-mfac)
 
