@@ -30,7 +30,7 @@ module.exports = {
     plugins: [
         new WebpackUserscript({
             headers(data) { return {
-                name: '清华社视听说 自动答题 2023',
+                name: '清华社视听说2023 - 自动答题',
                 namespace: 'lcandy2.tsinghuasts',
                 include: ['*://www.tsinghuaelt.com/*'],
                 "run-at": 'document-start',

@@ -1,18 +1,33 @@
-import {submitDelay, inputDelay} from './config'
+import {submitDelay, inputDelay, user_config} from './config'
 import {input_in, dragTo, getRanWord, getRanPhrase, sleep, click_btn} from './utils'
 
 // 填空题
 export async function doTianKone() {
-    // 先填写随机单词，获得答案
+    for (let i = 0; i < user_config.loop; i++) {
+        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
 
-    let inputs = $('.lib-fill-blank-do-input-left');
-    $.each(inputs, function(i,item){
-        input_in(item, getRanWord());
-    });
-    
-    await sleep(inputDelay);
-    click_btn(); // Submit
-    await sleep(submitDelay);
+        // 先填写随机单词，获得答案
+        let inputs = $('.lib-fill-blank-do-input-left');
+        $.each(inputs, function(i,item){
+            input_in(item, getRanWord());
+        });
+        
+        await sleep(inputDelay());
+        await click_btn(); // Submit
+        await sleep(submitDelay());
+
+        if (i < user_config.loop - 1) {
+            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+
+            answerbox = $('.lib-drag-answer-list');
+            boxes = $('.lib-drag-box');
+
+            await click_btn(); // Retry
+            await sleep(submitDelay());
+        }
+
+        console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
+    }
 
     let answer = [], anyAnswer = false;
     $('.lib-edit-score span[data-type="1"]').each((i,item)=>{
@@ -28,8 +43,8 @@ export async function doTianKone() {
         return;
     }
 
-    click_btn(); // Retry
-    await sleep(submitDelay);
+    await click_btn(); // Retry
+    await sleep(submitDelay());
 
     // 提交正确答案
     inputs = $('.lib-fill-blank-do-input-left');
@@ -37,7 +52,7 @@ export async function doTianKone() {
         input_in(item, answer[i]);
     });
     
-    await sleep(inputDelay);
+    await sleep(inputDelay());
 }
 
 // 录音题
@@ -71,45 +86,75 @@ export async function doReadRepeat() {
 export async function doSingleChoose() {
     let answer_map = {'A':0, 'B':1, 'C':2, 'D':3, 'E':4, 'F':5}
 
-    // 随机选择以获得正确答案
-    $('.lib-single-item-img img').click()
-    
-    await sleep(inputDelay);
-    click_btn(); // Submit
-    await sleep(submitDelay);
+    for (let i = 0; i < user_config.loop; i++) {
+        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
+        // 随机选择以获得正确答案
+        $('.lib-single-item-img img').click()
+        
+        await sleep(inputDelay());
+        await click_btn(); // Submit
+        await sleep(submitDelay());
+
+        if (i < user_config.loop - 1) {
+            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+
+            answerbox = $('.lib-drag-answer-list');
+            boxes = $('.lib-drag-box');
+
+            await click_btn(); // Retry
+            await sleep(submitDelay());
+        }
+
+        console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
+    }
 
     let answer = []
     $('.lib-single-cs-answer').each((i,item)=>{
         answer.push(item.innerText)
     });
 
-    click_btn(); // Retry
-    await sleep(submitDelay);
+    await click_btn(); // Retry
+    await sleep(submitDelay());
 
     $('.lib-single-box').each((i,item)=>{
         $($(item).find('.lib-single-item')[answer_map[answer[i]]]).find('img').click()
     });
 
-    await sleep(inputDelay);
+    await sleep(inputDelay());
 }
 
 // 下拉选择题
 export async function doDropChoose() {
 
-    // 随机选择以获得正确答案
-    $('.ant-select-dropdown-menu-item').click();
-    
-    await sleep(inputDelay);
-    click_btn(); // Submit
-    await sleep(submitDelay);
+    for (let i = 0; i < user_config.loop; i++) {
+        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
+        // 随机选择以获得正确答案
+        $('.ant-select-dropdown-menu-item').click();
+        
+        await sleep(inputDelay());
+        await click_btn(); // Submit
+        await sleep(submitDelay());
+
+        if (i < user_config.loop - 1) {
+            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+
+            answerbox = $('.lib-drag-answer-list');
+            boxes = $('.lib-drag-box');
+
+            await click_btn(); // Retry
+            await sleep(submitDelay());
+        }
+
+        console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
+    }
 
     let answer = [];
     $('.wy-lib-cs-key + span').each((i,item)=>{
         answer.push(item.innerText)
     });
     
-    click_btn(); // Retry
-    await sleep(submitDelay);
+    await click_btn(); // Retry
+    await sleep(submitDelay());
 
     $('.ant-select-dropdown-menu').each((i,div)=>{
         $(div).find('li').each((index, item)=>{
@@ -120,7 +165,7 @@ export async function doDropChoose() {
         });
     });
 
-    await sleep(inputDelay);
+    await sleep(inputDelay());
 }
 
 // 角色扮演
@@ -138,20 +183,37 @@ export async function doListenImgAnswer() {
         input_in(item, getRanPhrase());
     });
     
-    await sleep(inputDelay);
+    await sleep(inputDelay());
 }
 
 // 托块
 export async function doDrag() {
     let answerbox = $('.lib-drag-answer-list');
     let boxes = $('.lib-drag-box');
-    for(let i=0;i<answerbox.length;i++) {
-        await dragTo(boxes[i], answerbox[i]);
-    };
 
-    await sleep(inputDelay);
-    click_btn(); // Submit
-    await sleep(submitDelay);
+    for (let i = 0; i < user_config.loop; i++) {
+        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
+
+        for(let i=0;i<answerbox.length;i++) {
+            await dragTo(boxes[i], answerbox[i]);
+        };
+
+        await sleep(inputDelay());
+        await click_btn(); // Submit
+        await sleep(submitDelay());
+        
+        if (i < user_config.loop - 1) {
+            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+
+            await click_btn(); // Retry
+            await sleep(submitDelay());
+
+            answerbox = $('.lib-drag-answer-list');
+            boxes = $('.lib-drag-box');
+        }
+
+        console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
+    }
 
     let answer = [];
     $('.lib-drag-stu-info-answer').each((i,item)=>{
@@ -162,8 +224,8 @@ export async function doDrag() {
         answer.push(temp)
     });
     
-    click_btn(); // Retry
-    await sleep(submitDelay);
+    await click_btn(); // Retry
+    await sleep(submitDelay());
 
     let flag = []; // 保证每个托快只被托一次
     answerbox = $('.lib-drag-answer-list');
@@ -181,7 +243,7 @@ export async function doDrag() {
         }
     };
 
-    await sleep(inputDelay);
+    await sleep(inputDelay());
 }
 
 // 视频
@@ -203,30 +265,102 @@ export async function doVideo() {
 export async function doMutiChoose() {
     let answer_map = {'A':0, 'B':1, 'C':2, 'D':3, 'E':4, 'F':5, 'G':6, 'H':7, 'I':8, 'J':9}
 
-    // 随机选择以获得正确答案
-    $('.lib-single-item-img img').click()
-    
-    await sleep(inputDelay);
-    click_btn(); // Submit
-    await sleep(submitDelay);
+    for (let i = 0; i < user_config.loop; i++) {
+        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
+
+        // 随机选择以获得正确答案
+        $('.lib-single-item-img img').click()
+        
+        await sleep(inputDelay());
+        await click_btn(); // Submit
+        await sleep(submitDelay());
+
+        if (i < user_config.loop - 1) {
+            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+            await click_btn(); // Retry
+            await sleep(submitDelay());
+        }
+
+        console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
+    }
 
     let answer = []
     $('.lib-single-cs-answer').each((i,item)=>{
         answer.push(item.innerText)
     });
 
-    click_btn(); // Retry
-    await sleep(submitDelay);
+    await click_btn(); // Retry
+    await sleep(submitDelay());
 
     $('.lib-single-box').each((i,item)=>{
         for(const answer_single of answer[i])
             $($(item).find('.lib-single-item')[answer_map[answer_single]]).find('img').click()
     });
 
-    await sleep(inputDelay);
+    await sleep(inputDelay());
 }
 
 // 不支持体型
 export async function unSupposedOrSkip(params) {
     console.log('[!]', '遇到不支持体型或未选择，自动跳过。。。');
+}
+
+
+// EX-
+
+export async function doTF() {
+    const columns = {}
+    let columnsNum = 0
+    $(".lib-judge-right-frist .lib-judge-right-item-text").each((i,item)=>{
+        columns[item.innerText]=i;
+        columnsNum++;
+    })
+
+    for (let i = 0; i < user_config.loop; i++) {
+        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
+        // 随机选择以获得正确答案
+        $('.lib-judge-radio').each((i,item)=>{
+            if((i+1)%columnsNum==1) item.click();
+        })
+
+        await sleep(inputDelay());
+        await click_btn(); // Submit
+        await sleep(submitDelay());
+        
+        if (i < user_config.loop - 1) {
+            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+            await click_btn(); // Retry
+            await sleep(submitDelay());
+        }
+
+        console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
+    }
+
+    let answer = []
+    $(".lib-judge-info .lib-judge-info-text").each((i,item)=>{
+        answer.push(item.innerText);
+    })
+    //console.log(columns)
+    // console.log(answer)
+    await click_btn(); // Retry
+    await sleep(submitDelay());
+
+    let loop = 0
+    let order = 0
+    $('.lib-judge-radio').each((i,item)=>{
+        const rightAnswer = answer[loop];
+        const soTheOrder = columns[rightAnswer];
+
+        if(order == soTheOrder){
+            item.click();
+        }
+        if(order==columnsNum-1){
+            loop++;
+            order=0;
+        }else{
+            order++;
+        }
+    })
+
+    await sleep(inputDelay());
 }

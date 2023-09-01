@@ -12,7 +12,7 @@ async function doTopic() {
         $('#yun_status').text('当前题型：'+t);
     };
 
-    if($('.wy-course-bottom .wy-course-btn-right .wy-btn').text().indexOf('Submit')==-1 && $('#J_prismPlayer').length==0) {
+    if($('.wy-course-btn-right').text().indexOf('Submit')==-1 && $('#J_prismPlayer').length==0) {
         // $('.page-next')[1].click();
         // await sleep(pageNextDelay());
         $('#yun_status').text('当前题目已完成');
@@ -48,15 +48,19 @@ async function doTopic() {
         await DOM.doVideo();
         await sleep(user_config.delay); // 挂机，增加时长
         return true;
+    } else if($(".lib-judge-radio").length!=0){
+        await setTixing("判断类题型");
+        await DOM.doTF();
     } else {
         await DOM.unSupposedOrSkip();
         return false;
     }
 
     await sleep(user_config.delay); // 挂机，增加时长
-    click_btn(); // Submit
+    await click_btn(); // Submit
     return true;
 }
+
 
 // ===========================================
 
@@ -76,17 +80,11 @@ async function initConf() {
 }
 
 async function doLoop() {
-    outerLoop: while (running) {
-        for (let i = 0; i < user_config.loop; i++) {
-            let status = await doTopic();
-            if(!status && user_config.autostop) {
-                $('#yun_status').text('不支持当前体型, 已停止');
-                break outerLoop;  // 使用标签跳出外部的while循环
-            }
-            if (i < user_config.loop - 1) {
-                console.log('[*]', '准备下一次试错。。。');
-                await sleep(submitDelay());
-            }
+    while (running) {
+        let status = await doTopic();
+        if(!status && user_config.autostop) {
+            $('#yun_status').text('不支持当前题型, 已停止');
+            break;
         }
         console.log('[*]', '已完成，切换下一题。。。');
         await sleep(submitDelay());

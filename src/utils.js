@@ -40,17 +40,18 @@ export function mouseEvent(div, type, pos) {
 
 export async function dragTo(from, to) {
     let dragBlock = $(".lib-drag-block");
-    dragBlock.scrollTop(to.offsetTop - dragBlock[0].offsetTop);
-    $(document).scrollTop(dragBlock[0].offsetTop);
     await sleep(200);
     mouseEvent(from, 'mousedown');
     await sleep(100);
     mouseEvent(to, 'mousemove');
     await sleep(10);
     mouseEvent(to, 'mousemove');
-    mouseEvent(to, 'mousemove');
     mouseEvent(to, 'mouseup');
-    await sleep(100);
+    await sleep(400);
+    $(document).scrollTop(dragBlock[0].offsetTop);
+    const offset = to.offsetTop + to.clientHeight - dragBlock[0].offsetTop
+    dragBlock.scrollTop(offset);
+    await sleep(200);
 }
 
 export function extendConsole(console, isDebug) {
@@ -226,6 +227,41 @@ let phrases = ['Yes, he is', 'No, he isn\'t', 'Yes', 'No']
 let getRanWord = ()=> { return vocabulary[parseInt(Math.random()*vocabulary.length)] }
 let getRanPhrase = ()=> { return phrases[parseInt(Math.random()*phrases.length)] }
 let sleep = (ms)=> { return new Promise(resolve => setTimeout(resolve, ms)); }
-let click_btn = ()=> { $('.wy-course-bottom .wy-course-btn-right .wy-btn').click(); }
+
+let click_btn = async()=> {
+    let retry=$("button.wy-btn.ng-star-inserted");
+    if(retry.text().includes("Retry")){
+        console.log("Retry")
+       return retry.click();
+    }else{
+        console.log("Submit")
+        document.querySelectorAll("button.wy-btn.mg-l.ng-star-inserted").forEach(e=>{
+            if(e.innerText.includes("Submit")){
+               e.click()
+            }
+        })
+        $("#SM_TXT_1").click();
+    }
+    await sleep(2000);
+    //if($("div.va-container.ng-star-inserted").length!=0){
+    //    let from=document.querySelectorAll(".nc_iconfont.btn_slide")
+     //   console.log(from)
+     //   from=from[from.length-1]
+     //   console.log(from)
+       // let to =document.querySelector("div.va-container.ng-star-inserted")
+    //if(!to) return;
+      //  let rect = to.getBoundingClientRect();
+       // let pos={x:(rect.x + rect.width)-1,y:(rect.y + rect.height)-1}
+      //  console.log(to)
+        //await sleep(200000);
+      //  mouseEvent(from, 'mousedown');
+       // await sleep(10);
+       // mouseEvent(to, 'mousemove',pos);
+       // await sleep(10);
+       // mouseEvent(to, 'mousemove',pos);
+        //mouseEvent(to, 'mouseup',pos);
+       // await sleep(400);
+   // }
+}
 
 export { getRanWord, getRanPhrase, sleep, click_btn }
