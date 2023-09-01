@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        清华社视听说2023 - 自动答题
-// @version     0.4.6.1
+// @version     0.4.6.3
 // @author      lcandy2
 // @description 解放你的双手
 // @namespace   lcandy2.tsinghuasts
@@ -550,11 +550,12 @@ function initHook() {
 
 // 填空题
 async function doTianKone() {
+    let inputs = $('.lib-fill-blank-do-input-left');
+
     for (let i = 0; i < user_config.loop; i++) {
         console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
 
         // 先填写随机单词，获得答案
-        let inputs = $('.lib-fill-blank-do-input-left');
         $.each(inputs, function(i,item){
             input_in(item, getRanWord());
         });
@@ -566,8 +567,7 @@ async function doTianKone() {
         if (i < user_config.loop - 1) {
             console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
 
-            answerbox = $('.lib-drag-answer-list');
-            boxes = $('.lib-drag-box');
+            inputs = $('.lib-fill-blank-do-input-left');
 
             await click_btn(); // Retry
             await sleep(submitDelay());
@@ -645,9 +645,6 @@ async function doSingleChoose() {
         if (i < user_config.loop - 1) {
             console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
 
-            answerbox = $('.lib-drag-answer-list');
-            boxes = $('.lib-drag-box');
-
             await click_btn(); // Retry
             await sleep(submitDelay());
         }
@@ -684,9 +681,6 @@ async function doDropChoose() {
 
         if (i < user_config.loop - 1) {
             console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
-
-            answerbox = $('.lib-drag-answer-list');
-            boxes = $('.lib-drag-box');
 
             await click_btn(); // Retry
             await sleep(submitDelay());
