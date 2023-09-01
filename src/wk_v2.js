@@ -87,6 +87,7 @@ async function doLoop() {
             break;
         }
         console.log('[*]', '已完成，切换下一题。。。');
+        $('#dom_status').text('')
         await sleep(submitDelay());
         $('.page-next')[1].click();
         await sleep(pageNextDelay());
@@ -94,6 +95,7 @@ async function doLoop() {
     $('.yunPanel button').prop('disabled', false);
     $('.yunPanel button').removeClass('is-disabled');
     $('#yun_status').text('IDLE');
+    $('#dom_status').text('')
 }
 
 extendConsole(window.console, true);
@@ -153,6 +155,7 @@ function pageFullyLoaded () {
         </div>
         <div class="el-divider el-divider--horizontal" style="margin: 10px 0;"></div>
         <h2 id="yun_status" style="font-size: small;text-align: center;margin-bottom:8px;">IDLE</h2>
+        <h2 id="dom_status" style="font-size: small;text-align: center;margin-bottom:8px;"></h2>
         <button class="el-button el-button--default el-button--mini" id="yun_doone" style="width: 100%;margin-bottom: 3px;margin-left: 0;">做一题</button>
         <button class="el-button el-button--primary el-button--mini" id="yun_start" style="width: 100%;margin-left: 0;">开始</button>
     </div>

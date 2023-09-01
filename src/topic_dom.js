@@ -6,7 +6,7 @@ export async function doTianKone() {
     let inputs = $('.lib-fill-blank-do-input-left');
 
     for (let i = 0; i < user_config.loop; i++) {
-        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
+        await setStatus(`第 ${i + 1} 次试错`);
 
         // 先填写随机单词，获得答案
         $.each(inputs, function(i,item){
@@ -18,7 +18,7 @@ export async function doTianKone() {
         await sleep(submitDelay());
 
         if (i < user_config.loop - 1) {
-            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+            await setStatus(`准备第 ${i + 2} 次试错`);
 
             inputs = $('.lib-fill-blank-do-input-left');
 
@@ -29,6 +29,7 @@ export async function doTianKone() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
+    await setStatus(`获取答案中...`);
     let answer = [], anyAnswer = false;
     $('.lib-edit-score span[data-type="1"]').each((i,item)=>{
         if(item.innerText.toLowerCase().indexOf('vary')!=-1) {
@@ -47,6 +48,7 @@ export async function doTianKone() {
     await sleep(submitDelay());
 
     // 提交正确答案
+    await setStatus(`提交答案中...`);
     inputs = $('.lib-fill-blank-do-input-left');
     $(inputs).each((i,item)=>{
         input_in(item, answer[i]);
@@ -87,7 +89,7 @@ export async function doSingleChoose() {
     let answer_map = {'A':0, 'B':1, 'C':2, 'D':3, 'E':4, 'F':5}
 
     for (let i = 0; i < user_config.loop; i++) {
-        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
+        await setStatus(`第 ${i + 1} 次试错`)
         // 随机选择以获得正确答案
         $('.lib-single-item-img img').click()
         
@@ -96,7 +98,7 @@ export async function doSingleChoose() {
         await sleep(submitDelay());
 
         if (i < user_config.loop - 1) {
-            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+            await setStatus(`准备第 ${i + 2} 次试错`);
 
             await click_btn(); // Retry
             await sleep(submitDelay());
@@ -105,6 +107,7 @@ export async function doSingleChoose() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
+    await setStatus(`获取答案中...`);
     let answer = []
     $('.lib-single-cs-answer').each((i,item)=>{
         answer.push(item.innerText)
@@ -113,6 +116,7 @@ export async function doSingleChoose() {
     await click_btn(); // Retry
     await sleep(submitDelay());
 
+    await setStatus(`提交答案中...`);
     $('.lib-single-box').each((i,item)=>{
         $($(item).find('.lib-single-item')[answer_map[answer[i]]]).find('img').click()
     });
@@ -124,7 +128,7 @@ export async function doSingleChoose() {
 export async function doDropChoose() {
 
     for (let i = 0; i < user_config.loop; i++) {
-        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
+        await setStatus(`第 ${i + 1} 次试错`)
         // 随机选择以获得正确答案
         $('.ant-select-dropdown-menu-item').click();
         
@@ -133,7 +137,7 @@ export async function doDropChoose() {
         await sleep(submitDelay());
 
         if (i < user_config.loop - 1) {
-            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+            await setStatus(`准备第 ${i + 2} 次试错`);
 
             await click_btn(); // Retry
             await sleep(submitDelay());
@@ -142,6 +146,7 @@ export async function doDropChoose() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
+    await setStatus(`获取答案中...`);
     let answer = [];
     $('.wy-lib-cs-key + span').each((i,item)=>{
         answer.push(item.innerText)
@@ -150,6 +155,7 @@ export async function doDropChoose() {
     await click_btn(); // Retry
     await sleep(submitDelay());
 
+    await setStatus(`提交答案中...`);
     $('.ant-select-dropdown-menu').each((i,div)=>{
         $(div).find('li').each((index, item)=>{
             if($.trim(item.innerText) == answer[i]) {
@@ -186,7 +192,7 @@ export async function doDrag() {
     let boxes = $('.lib-drag-box');
 
     for (let i = 0; i < user_config.loop; i++) {
-        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
+        await setStatus(`第 ${i + 1} 次试错`)
 
         for(let i=0;i<answerbox.length;i++) {
             await dragTo(boxes[i], answerbox[i]);
@@ -197,7 +203,7 @@ export async function doDrag() {
         await sleep(submitDelay());
         
         if (i < user_config.loop - 1) {
-            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+            await setStatus(`准备第 ${i + 2} 次试错`);
 
             await click_btn(); // Retry
             await sleep(submitDelay());
@@ -209,6 +215,7 @@ export async function doDrag() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
+    await setStatus(`获取答案中...`);
     let answer = [];
     $('.lib-drag-stu-info-answer').each((i,item)=>{
         let temp = [];
@@ -221,6 +228,7 @@ export async function doDrag() {
     await click_btn(); // Retry
     await sleep(submitDelay());
 
+    await setStatus(`提交答案中...`);
     let flag = []; // 保证每个托快只被托一次
     answerbox = $('.lib-drag-answer-list');
     boxes = $('.lib-drag-box');
@@ -260,7 +268,7 @@ export async function doMutiChoose() {
     let answer_map = {'A':0, 'B':1, 'C':2, 'D':3, 'E':4, 'F':5, 'G':6, 'H':7, 'I':8, 'J':9}
 
     for (let i = 0; i < user_config.loop; i++) {
-        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
+        await setStatus(`第 ${i + 1} 次试错`)
 
         // 随机选择以获得正确答案
         $('.lib-single-item-img img').click()
@@ -270,7 +278,7 @@ export async function doMutiChoose() {
         await sleep(submitDelay());
 
         if (i < user_config.loop - 1) {
-            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+            await setStatus(`准备第 ${i + 2} 次试错`);
             await click_btn(); // Retry
             await sleep(submitDelay());
         }
@@ -278,6 +286,7 @@ export async function doMutiChoose() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
+    await setStatus(`获取答案中...`);
     let answer = []
     $('.lib-single-cs-answer').each((i,item)=>{
         answer.push(item.innerText)
@@ -286,6 +295,7 @@ export async function doMutiChoose() {
     await click_btn(); // Retry
     await sleep(submitDelay());
 
+    await setStatus(`提交答案中...`);
     $('.lib-single-box').each((i,item)=>{
         for(const answer_single of answer[i])
             $($(item).find('.lib-single-item')[answer_map[answer_single]]).find('img').click()
@@ -311,7 +321,7 @@ export async function doTF() {
     })
 
     for (let i = 0; i < user_config.loop; i++) {
-        console.log('[~] 试错:', `开始第 ${i + 1} 次试错`)
+        await setStatus(`第 ${i + 1} 次试错`)
         // 随机选择以获得正确答案
         $('.lib-judge-radio').each((i,item)=>{
             if((i+1)%columnsNum==1) item.click();
@@ -322,7 +332,7 @@ export async function doTF() {
         await sleep(submitDelay());
         
         if (i < user_config.loop - 1) {
-            console.log('[~] 试错:', `准备第 ${i + 2} 次试错`)
+            await setStatus(`准备第 ${i + 2} 次试错`);
             await click_btn(); // Retry
             await sleep(submitDelay());
         }
@@ -330,6 +340,7 @@ export async function doTF() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
+    await setStatus(`获取答案中...`);
     let answer = []
     $(".lib-judge-info .lib-judge-info-text").each((i,item)=>{
         answer.push(item.innerText);
@@ -339,6 +350,7 @@ export async function doTF() {
     await click_btn(); // Retry
     await sleep(submitDelay());
 
+    await setStatus(`提交答案中...`);
     let loop = 0
     let order = 0
     $('.lib-judge-radio').each((i,item)=>{
@@ -358,3 +370,8 @@ export async function doTF() {
 
     await sleep(inputDelay());
 }
+
+let setStatus = async (t)=> {
+    console.log('[~] 答题:', t);
+    $('#dom_status').text(''+t);
+};
