@@ -77,7 +77,8 @@
         'autodo': allauto,
         'autotryerr': true,
         'autostop': false,
-        'delay': 10000
+        'delay': 10000,
+        'loop': 1
     };
 
     function input_in(e, txt) {
@@ -444,24 +445,32 @@
         $('#set_tryerr').prop("checked", config.autotryerr);
         $('#set_manu').prop("checked", config.autostop);
         $('#set_delay').val(config.delay);
+        $('#set_loop').val(config.loop);
     }
 
     async function doLoop() {
-        while (running) {
-            let status = await doTopic();
-            if(!status && config.autostop) {
-                $('#yun_status').text('不支持当前体型, 已停止');
-                break;
+        outerLoop: while (running) {
+            for (let i = 0; i < config.loop; i++) {
+                let status = await doTopic();
+                if (!status && config.autostop) {
+                    $('#yun_status').text('不支持当前体型, 已停止');
+                    break outerLoop;  // 使用标签跳出外部的while循环
+                }
+                console.log('[*]', '已完成，切换下一题。。。');
+                await sleep(submitDelay());
+                if (i < config.loop - 1) {
+                    console.log('[*]', '准备下一次试错。。。');
+                    await sleep(pageNextDelay());
+                } else {
+                    $('.page-next')[1].click();
+                    await sleep(pageNextDelay());
+                }
             }
-            console.log('[*]', '已完成，切换下一题。。。');
-            await sleep(submitDelay());
-            $('.page-next')[1].click()
-            await sleep(pageNextDelay()); 
         }
         $('.yunPanel button').prop('disabled', false);
         $('#yun_status').text('IDLE');
     }
-
+    
     console.log('=== 视听说 - 脚本启动 ===');
 
     let ori_create_player = unsafeWindow['Aliplayer'];
@@ -488,38 +497,56 @@
             <div class="close">x</div>
             <h1 style="text-align: center;font-size: medium;">社听说 - 自动答题</h1>
             <hr>
-            <h2 style="font-size: small;">自动完成题型：</h2>
-            <p>
-                <input type="checkbox" id="auto_tiankong">
-                <label for="auto_tiankong">填空</label>
-                <input type="checkbox" id="auto_luyin">
-                <label for="auto_luyin">录音</label>
-                <input type="checkbox" id="auto_lytk">
-                <label for="auto_lytk">录音填空</label>
-                <input type="checkbox" id="auto_roleplay">
-                <label for="auto_roleplay">角色扮演</label>
-                <input type="checkbox" id="auto_danxuan">
-                <label for="auto_danxuan">单项选择</label>
-                <input type="checkbox" id="auto_dropchoose">
-                <label for="auto_dropchoose">下拉选择</label>
-                <input type="checkbox" id="auto_drag">
-                <label for="auto_drag">托块</label>
-                <input type="checkbox" id="auto_video">
-                <label for="auto_video">视频</label>
-            </p>
-            <h2 style="font-size: small;">设置</h2>
-            <p>
+            <div>
+                <h2 style="font-size: small;">自动完成题型：</h2>
+                <p>
+                    <input type="checkbox" id="auto_tiankong">
+                    <label for="auto_tiankong">填空</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="auto_luyin">
+                    <label for="auto_luyin">录音</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="auto_lytk">
+                    <label for="auto_lytk">录音填空</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="auto_roleplay">
+                    <label for="auto_roleplay">角色扮演</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="auto_danxuan">
+                    <label for="auto_danxuan">单项选择</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="auto_dropchoose">
+                    <label for="auto_dropchoose">下拉选择</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="auto_drag">
+                    <label for="auto_drag">托块</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="auto_video">
+                    <label for="auto_video">视频</label>
+                </p>
+            </div>
+            <div>
                 <p>
                     <input type="checkbox" id="set_tryerr">
                     <label for="set_tryerr">自动试错</label>
+                </p>
+                <p>
                     <input type="checkbox" id="set_manu">
                     <label for="set_manu">不支持题型停止</label>
                 </p>
                 <label>每题耗时(ms) <input style="width: 50px;" type="text" id="set_delay"></label>
+                <label>试错次数 <input style="width: 50px;" type="text" id="set_loop"></label>
                 <button id="yun_save" style="float: left;margin-top:5px;width: 48%;">保存</button>
                 <button id="yun_reset" style="float: right;margin-top:5px;width: 48%;">默认</button>
                 <div style="clear: both;"></div>
-            </p>
+            </div>
             <hr>
             <h2 id="yun_status" style="font-size: small;text-align: center;margin-bottom:8px;">IDLE</h2>
             <button id="yun_doone" style="width: 100%;margin-bottom: 3px;">做一题</button>

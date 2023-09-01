@@ -1,10 +1,18 @@
-![运行图](https://raw.githubusercontent.com/hyunsssssssss/ShiTingShuo/master/docs/pic_v4.png)
+![运行图](https://raw.githubusercontent.com/lcandy2/ShiTingShuo/master/docs/pic_v4.png)
 
 # 视听说自动答题挂课助手
 
 > 适用于清华英语社 - 视听说
 
 现已更新 v4.0 重构代码, 优化 UI, 且已完全支持语音题目自动回答
+
+[GitHub](https://github.com/lcandy2/ShiTingShuo) | [GreasyFork](https://greasyfork.org/zh-CN/scripts/474368-%E6%B8%85%E5%8D%8E%E7%A4%BE%E8%A7%86%E5%90%AC%E8%AF%B4-%E8%87%AA%E5%8A%A8%E7%AD%94%E9%A2%98-2023)
+
+## 使用
+
+* 点击上方按钮或点此[安装](https://github.com/lcandy2/ShiTingShuo/raw/master/dist/main.user.js)脚本
+
+注：需配合脚本管理器使用，推荐使用 [Tampermonkey](https://www.tampermonkey.net/)
 
 ## 构建
 ```
@@ -27,6 +35,9 @@ $ yarn build
 6. 角色扮演
 
 ## 更新记录
+
+#### v0.4.6
+1. 增加试错次数支持
 
 #### v0.4.5
 1. 同步[Atarsei](https://greasyfork.org/zh-CN/scripts/452423-%E6%B8%85%E5%8D%8E%E7%A4%BE%E8%A7%86%E5%90%AC%E8%AF%B4%E4%BF%AE%E6%94%B9%E7%89%88-%E8%87%AA%E5%8A%A8%E7%AD%94%E9%A2%98)代码

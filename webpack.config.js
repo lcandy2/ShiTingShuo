@@ -30,13 +30,15 @@ module.exports = {
     plugins: [
         new WebpackUserscript({
             headers(data) { return {
-                name: '清华社视听说 - 自动答题',
+                name: '清华社视听说 自动答题 2023',
+                namespace: 'lcandy2.tsinghuasts',
                 include: ['*://www.tsinghuaelt.com/*'],
                 "run-at": 'document-start',
                 grant: ['GM.addStyle', 'GM.setValue', 'GM.getValue', 'GM.deleteValue', 'GM_xmlhttpRequest'],
                 version: data.version,
                 description: '解放你的双手',
-                author: 'Hyun',
+                author: 'lcandy2',
+                license: 'GPL3.0',
                 icon: 'https://www.tsinghuaelt.com/favicon.ico',
                 require: [
                     'https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js'

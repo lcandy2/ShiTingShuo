@@ -14,7 +14,7 @@ async function doTopic() {
 
     if($('.wy-course-bottom .wy-course-btn-right .wy-btn').text().indexOf('Submit')==-1 && $('#J_prismPlayer').length==0) {
         // $('.page-next')[1].click();
-        // await sleep(pageNextDelay);
+        // await sleep(pageNextDelay());
         $('#yun_status').text('当前题目已完成');
         return false;
     }
@@ -72,19 +72,26 @@ async function initConf() {
     $('#set_manu').prop("checked", user_config.autostop);
     $('#set_auto_record').prop("checked", user_config.autorecord);
     $('#set_delay').val(user_config.delay);
+    $('#set_loop').val(user_config.loop);
 }
 
 async function doLoop() {
-    while (running) {
-        let status = await doTopic();
-        if(!status && user_config.autostop) {
-            $('#yun_status').text('不支持当前体型, 已停止');
-            break;
+    outerLoop: while (running) {
+        for (let i = 0; i < user_config.loop; i++) {
+            let status = await doTopic();
+            if(!status && user_config.autostop) {
+                $('#yun_status').text('不支持当前体型, 已停止');
+                break outerLoop;  // 使用标签跳出外部的while循环
+            }
+            if (i < user_config.loop - 1) {
+                console.log('[*]', '准备下一次试错。。。');
+                await sleep(submitDelay());
+            }
         }
         console.log('[*]', '已完成，切换下一题。。。');
-        await sleep(submitDelay);
-        $('.page-next')[1].click()
-        await sleep(pageNextDelay);
+        await sleep(submitDelay());
+        $('.page-next')[1].click();
+        await sleep(pageNextDelay());
     }
     $('.yunPanel button').prop('disabled', false);
     $('.yunPanel button').removeClass('is-disabled');
@@ -128,20 +135,24 @@ function pageFullyLoaded () {
             <label for="auto_video">视频</label>
         </p>
         <h2 style="font-size: small;">设置</h2>
-        <p>
+        <div>
             <p>
                 <input type="checkbox" id="set_tryerr">
                 <label for="set_tryerr">自动试错</label>
+                <br>
                 <input type="checkbox" id="set_auto_record">
                 <label for="set_auto_record">自动回答语音</label>
+                <br>
                 <input type="checkbox" id="set_manu">
                 <label for="set_manu">不支持题型停止</label>
             </p>
             <label class="el-input el-input--mini">每题耗时(ms) <input class="el-input__inner" style="width: 50px;padding: 3px;" type="text" id="set_delay"></label>
+            <br>
+            <label class="el-input el-input--mini">试错次数 <input class="el-input__inner" style="width: 50px;padding: 3px;" type="text" id="set_loop"></label>
             <button class="el-button el-button--default el-button--mini" id="yun_save" style="float: left;margin-top:5px;width: 48%;margin-left: 0;">保存</button>
             <button class="el-button el-button--default el-button--mini" id="yun_reset" style="float: right;margin-top:5px;width: 48%;margin-left: 0;">默认</button>
             <div style="clear: both;"></div>
-        </p>
+        </div>
         <div class="el-divider el-divider--horizontal" style="margin: 10px 0;"></div>
         <h2 id="yun_status" style="font-size: small;text-align: center;margin-bottom:8px;">IDLE</h2>
         <button class="el-button el-button--default el-button--mini" id="yun_doone" style="width: 100%;margin-bottom: 3px;margin-left: 0;">做一题</button>
@@ -208,6 +219,7 @@ function pageFullyLoaded () {
         user_config.autostop = $('#set_manu').prop("checked");
         user_config.autorecord = $('#set_auto_record').prop("checked");
         user_config.delay = $('#set_delay').val();
+        user_config.loop = $('#set_loop').val();
 
         GM.setValue('config', user_config).then(()=>{
             $('#yun_status').text('保存成功');
