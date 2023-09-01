@@ -137,10 +137,11 @@ export function extendConsole(console, isDebug) {
     /**
     * @description 打印 error 样式的文字
     * @param {String} value - 打印值
-    */
+    *
     console.error = function (value, ...args) {
         console.colorful(value, `color: ${typeColor("error")};`, ...args);
     };
+    */
 
     /**
     * @description 打印 3D 样式的文字

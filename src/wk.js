@@ -18,9 +18,17 @@
     'use strict';
     
     // 下方时间你可以根据你的网络情况酌情调整
-    const submitDelay = 3000;       // Submit 之后的等待时间
-    const pageNextDelay = 5000;     // 换页 之后的等待时间
-    const inputDelay = 500;         // 输入 之后的等待时间
+    // Submit 之后的等待时间
+    function submitDelay(MAX = 4000, MIN = 2000) {
+        return Math.floor(Math.random() * (MAX - MIN) + MIN)
+    }
+    // 换页 之后的等待时间
+    function pageNextDelay(MAX = 6000, MIN = 4000) {
+        return Math.floor(Math.random() * (MAX - MIN) + MIN)
+    }
+    function inputDelay(MAX = 600, MIN = 400) {
+        return Math.floor(Math.random() * (MAX - MIN) + MIN)
+    }// 输入 之后的等待时间
 
     const allauto = ['auto_tiankong', 'auto_luyin', 'auto_lytk', 'auto_roleplay', 'auto_danxuan', 'auto_dropchoose', 'auto_drag', 'auto_video'];
 
@@ -29,7 +37,42 @@
     let getRanWord = ()=> { return vocabulary[parseInt(Math.random()*vocabulary.length)] }
     let getRanPhrase = ()=> { return phrases[parseInt(Math.random()*phrases.length)] }
     let sleep = (ms)=> { return new Promise(resolve => setTimeout(resolve, ms)); }
-    let click_btn = ()=> { $('.wy-course-bottom .wy-course-btn-right .wy-btn').click(); }
+    // let click_btn = ()=> { $('.wy-course-bottom .wy-course-btn-right .wy-btn').click(); }
+    let click_btn = async()=> {
+        let retry=$("button.wy-btn.ng-star-inserted");
+        if(retry.text().includes("Retry")){
+            console.log("Retry")
+           return retry.click();
+        }else{
+            console.log("Submit")
+            document.querySelectorAll("button.wy-btn.mg-l.ng-star-inserted").forEach(e=>{
+                if(e.innerText.includes("Submit")){
+                   e.click()
+                }
+            })
+            $("#SM_TXT_1").click();
+        }
+        // await sleep(2000);
+        //if($("div.va-container.ng-star-inserted").length!=0){
+        //    let from=document.querySelectorAll(".nc_iconfont.btn_slide")
+         //   console.log(from)
+         //   from=from[from.length-1]
+         //   console.log(from)
+           // let to =document.querySelector("div.va-container.ng-star-inserted")
+        //if(!to) return;
+          //  let rect = to.getBoundingClientRect();
+           // let pos={x:(rect.x + rect.width)-1,y:(rect.y + rect.height)-1}
+          //  console.log(to)
+            //await sleep(200000);
+          //  mouseEvent(from, 'mousedown');
+           // await sleep(10);
+           // mouseEvent(to, 'mousemove',pos);
+           // await sleep(10);
+           // mouseEvent(to, 'mousemove',pos);
+            //mouseEvent(to, 'mouseup',pos);
+           // await sleep(400);
+       // }
+    }
     let config = {
         'autodo': allauto,
         'autotryerr': true,
@@ -92,15 +135,62 @@
         await sleep(100);
     }
 
+    // EX-
+
+    async function doTF() {
+        const columns = {}
+        let columnsNum = 0
+        $(".lib-judge-right-frist .lib-judge-right-item-text").each((i, item) => {
+            columns[item.innerText] = i;
+            columnsNum++;
+        })
+        // 随机选择以获得正确答案
+        $('.lib-judge-radio').each((i, item) => {
+            if ((i + 1) % columnsNum == 1) item.click();
+        })
+
+        await sleep(inputDelay());
+        await click_btn(); // Submit
+        await sleep(submitDelay());
+
+        let answer = []
+        $(".lib-judge-info .lib-judge-info-text").each((i, item) => {
+            answer.push(item.innerText);
+        })
+        //console.log(columns)
+        // console.log(answer)
+        await click_btn(); // Retry
+        await sleep(submitDelay());
+
+        let loop = 0
+        let order = 0
+        $('.lib-judge-radio').each((i, item) => {
+            const rightAnswer = answer[loop];
+            const soTheOrder = columns[rightAnswer];
+
+            if (order == soTheOrder) {
+                item.click();
+            }
+            if (order == columnsNum - 1) {
+                loop++;
+                order = 0;
+            } else {
+                order++;
+            }
+        })
+
+        await sleep(inputDelay());
+    }
+
     async function doTopic() {
         let setTixing = async (t)=> {
             console.log('[+] 题型:', t);
             $('#yun_status').text('当前题型：'+t);
         }; 
 
-        if($('.wy-course-bottom .wy-course-btn-right .wy-btn').text().indexOf('Submit')==-1 && $('#J_prismPlayer').length==0) {
+        if($('.wy-course-btn-right').text().indexOf('Submit')==-1 && $('#J_prismPlayer').length==0) {
             // $('.page-next')[1].click();
-            // await sleep(pageNextDelay);
+            // await sleep(pageNextDelay());
             $('#yun_status').text('当前题目已完成');
             return false;
         }
@@ -131,13 +221,16 @@
             await doVideo();
             await sleep(config.delay); // 挂机，增加时长
             return true;
+        } else if($(".lib-judge-radio").length!=0){
+            await setTixing("Ex-TFlike");
+            await doTF();
         } else {
             await unSupposedOrSkip();
             return false;
         }
 
         await sleep(config.delay); // 挂机，增加时长
-        click_btn(); // Submit
+        await click_btn(); // Submit
         return true;
     }
 
@@ -152,9 +245,9 @@
             input_in(item, getRanWord());
         });
         
-        await sleep(inputDelay);
-        click_btn(); // Submit
-        await sleep(submitDelay);
+        await sleep(inputDelay());
+        await click_btn(); // Submit
+        await sleep(submitDelay());
 
         let answer = [], anyAnswer = false;
         $('.lib-edit-score span[data-type="1"]').each((i,item)=>{
@@ -170,8 +263,8 @@
             return;
         }
 
-        click_btn(); // Retry
-        await sleep(submitDelay);
+        await click_btn(); // Retry
+        await sleep(submitDelay());
 
         // 提交正确答案
         inputs = $('.lib-fill-blank-do-input-left');
@@ -179,7 +272,7 @@
             input_in(item, answer[i]);
         });
         
-        await sleep(inputDelay);
+        await sleep(inputDelay());
     }
 
     // 录音题
@@ -216,23 +309,23 @@
         // 随机选择以获得正确答案
         $('.lib-single-item-img img').click()
         
-        await sleep(inputDelay);
-        click_btn(); // Submit
-        await sleep(submitDelay);
+        await sleep(inputDelay());
+        await click_btn(); // Submit
+        await sleep(submitDelay());
 
         let answer = []
         $('.lib-single-cs-answer').each((i,item)=>{
             answer.push(item.innerText)
         });
 
-        click_btn(); // Retry
-        await sleep(submitDelay);
+        await click_btn(); // Retry
+        await sleep(submitDelay());
 
         $('.lib-single-box').each((i,item)=>{
             $($(item).find('.lib-single-item')[answer_map[answer[i]]]).find('img').click()
         });
 
-        await sleep(inputDelay);
+        await sleep(inputDelay());
     }
 
     // 下拉选择题
@@ -241,17 +334,17 @@
         // 随机选择以获得正确答案
         $('.ant-select-dropdown-menu-item').click();
         
-        await sleep(inputDelay);
-        click_btn(); // Submit
-        await sleep(submitDelay);
+        await sleep(inputDelay());
+        await click_btn(); // Submit
+        await sleep(submitDelay());
 
         let answer = [];
         $('.wy-lib-cs-key + span').each((i,item)=>{
             answer.push(item.innerText)
         });
         
-        click_btn(); // Retry
-        await sleep(submitDelay);
+        await click_btn(); // Retry
+        await sleep(submitDelay());
 
         $('.ant-select-dropdown-menu').each((i,div)=>{
             $(div).find('li').each((index, item)=>{
@@ -262,7 +355,7 @@
             });
         });
 
-        await sleep(inputDelay);
+        await sleep(inputDelay());
     }
 
     // 角色扮演
@@ -280,7 +373,7 @@
             input_in(item, getRanPhrase());
         });
         
-        await sleep(inputDelay);
+        await sleep(inputDelay());
     }
 
     // 托块
@@ -291,9 +384,9 @@
             await dragTo(boxes[i], answerbox[i]);
         };
 
-        await sleep(inputDelay);
-        click_btn(); // Submit
-        await sleep(submitDelay);
+        await sleep(inputDelay());
+        await click_btn(); // Submit
+        await sleep(submitDelay());
 
         let answer = [];
         $('.lib-drag-stu-info-answer').each((i,item)=>{
@@ -304,8 +397,8 @@
             answer.push(temp)
         });
         
-        click_btn(); // Retry
-        await sleep(submitDelay);
+        await click_btn(); // Retry
+        await sleep(submitDelay());
 
         answerbox = $('.lib-drag-answer-list');
         boxes = $('.lib-drag-box');
@@ -317,7 +410,7 @@
             };
         };
 
-        await sleep(inputDelay);
+        await sleep(inputDelay());
     }
 
     async function doVideo() {
@@ -361,9 +454,9 @@
                 break;
             }
             console.log('[*]', '已完成，切换下一题。。。');
-            await sleep(submitDelay);
+            await sleep(submitDelay());
             $('.page-next')[1].click()
-            await sleep(pageNextDelay); 
+            await sleep(pageNextDelay()); 
         }
         $('.yunPanel button').prop('disabled', false);
         $('#yun_status').text('IDLE');

@@ -28,6 +28,10 @@ $ yarn build
 
 ## 更新记录
 
+#### v0.4.5
+1. 同步[Atarsei](https://greasyfork.org/zh-CN/scripts/452423-%E6%B8%85%E5%8D%8E%E7%A4%BE%E8%A7%86%E5%90%AC%E8%AF%B4%E4%BF%AE%E6%94%B9%E7%89%88-%E8%87%AA%E5%8A%A8%E7%AD%94%E9%A2%98)代码
+2. 修复用户界面不弹出的错误
+
 #### v0.4.4
 1. 解决语音获取跨域问题
 2. 提高托块题目回答正确率
