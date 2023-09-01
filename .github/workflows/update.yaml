@@ -3,7 +3,7 @@ name: Update UserScript
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
