@@ -69,6 +69,5 @@ module.exports = {
         modules: [path.resolve(__dirname, '/src'), 'node_modules/'],
         descriptionFiles: ['package.json'],
         extensions : ['.js', '.ts']
-    },
-    watch: true
+    }
 }
