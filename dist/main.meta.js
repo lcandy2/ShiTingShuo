@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name        清华社视听说 自动答题 2023
-// @version     0.4.6
+// @name        清华社视听说2023 - 自动答题
+// @version     0.4.7
 // @author      lcandy2
 // @description 解放你的双手
 // @namespace   lcandy2.tsinghuasts
