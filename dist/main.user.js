@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        清华社视听说2023 - 自动答题
-// @version     0.4.7
+// @version     0.4.8
 // @author      lcandy2
 // @description 解放你的双手
 // @namespace   lcandy2.tsinghuasts
@@ -314,6 +314,7 @@ let user_config = {
     'autotryerr': true,
     'autostop': false,
     'autorecord': true,
+    'redo': false,
     'delay': 10000,
     'loop': 1
 };
@@ -553,19 +554,22 @@ async function doTianKone() {
     let inputs = $('.lib-fill-blank-do-input-left');
 
     for (let i = 0; i < user_config.loop; i++) {
-        await setStatus(`第 ${i + 1} 次试错`);
+        await setStatus(`第 ${i + 1} 次试错：填写答案`);
 
         // 先填写随机单词，获得答案
         $.each(inputs, function(i,item){
             input_in(item, getRanWord());
         });
         
+        await setStatus(`第 ${i + 1} 次试错：等待提交`);
         await sleep(inputDelay());
+        await setStatus(`第 ${i + 1} 次试错：提交答案`);
         await click_btn(); // Submit
+        await setStatus(`第 ${i + 1} 次试错：等待继续`);
         await sleep(submitDelay());
 
         if (i < user_config.loop - 1) {
-            await setStatus(`准备第 ${i + 2} 次试错`);
+            await setStatus(`第 ${i + 2} 次试错：准备开始`);
 
             inputs = $('.lib-fill-blank-do-input-left');
 
@@ -576,7 +580,7 @@ async function doTianKone() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
-    await setStatus(`获取答案中...`);
+    await setStatus(`答题：获取答案`);
     let answer = [], anyAnswer = false;
     $('.lib-edit-score span[data-type="1"]').each((i,item)=>{
         if(item.innerText.toLowerCase().indexOf('vary')!=-1) {
@@ -591,16 +595,18 @@ async function doTianKone() {
         return;
     }
 
+    await setStatus(`答题：准备提交答案`);
     await click_btn(); // Retry
     await sleep(submitDelay());
 
     // 提交正确答案
-    await setStatus(`提交答案中...`);
+    await setStatus(`答题：填写答案`);
     inputs = $('.lib-fill-blank-do-input-left');
     $(inputs).each((i,item)=>{
         input_in(item, answer[i]);
     });
     
+    await setStatus(`答题：等待提交`);
     await sleep(inputDelay());
 }
 
@@ -636,16 +642,19 @@ async function doSingleChoose() {
     let answer_map = {'A':0, 'B':1, 'C':2, 'D':3, 'E':4, 'F':5}
 
     for (let i = 0; i < user_config.loop; i++) {
-        await setStatus(`第 ${i + 1} 次试错`)
+        await setStatus(`第 ${i + 1} 次试错：填写答案`);
         // 随机选择以获得正确答案
         $('.lib-single-item-img img').click()
         
+        await setStatus(`第 ${i + 1} 次试错：等待提交`);
         await sleep(inputDelay());
+        await setStatus(`第 ${i + 1} 次试错：提交答案`);
         await click_btn(); // Submit
+        await setStatus(`第 ${i + 1} 次试错：等待继续`);
         await sleep(submitDelay());
 
         if (i < user_config.loop - 1) {
-            await setStatus(`准备第 ${i + 2} 次试错`);
+            await setStatus(`第 ${i + 2} 次试错：准备开始`);
 
             await click_btn(); // Retry
             await sleep(submitDelay());
@@ -654,20 +663,22 @@ async function doSingleChoose() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
-    await setStatus(`获取答案中...`);
+    await setStatus(`答题：获取答案`);
     let answer = []
     $('.lib-single-cs-answer').each((i,item)=>{
         answer.push(item.innerText)
     });
 
+    await setStatus(`答题：准备提交答案`);
     await click_btn(); // Retry
     await sleep(submitDelay());
 
-    await setStatus(`提交答案中...`);
+    await setStatus(`答题：填写答案`);
     $('.lib-single-box').each((i,item)=>{
         $($(item).find('.lib-single-item')[answer_map[answer[i]]]).find('img').click()
     });
 
+    await setStatus(`答题：等待提交`);
     await sleep(inputDelay());
 }
 
@@ -675,16 +686,19 @@ async function doSingleChoose() {
 async function doDropChoose() {
 
     for (let i = 0; i < user_config.loop; i++) {
-        await setStatus(`第 ${i + 1} 次试错`)
+        await setStatus(`第 ${i + 1} 次试错：填写答案`);
         // 随机选择以获得正确答案
         $('.ant-select-dropdown-menu-item').click();
         
+        await setStatus(`第 ${i + 1} 次试错：等待提交`);
         await sleep(inputDelay());
+        await setStatus(`第 ${i + 1} 次试错：提交答案`);
         await click_btn(); // Submit
+        await setStatus(`第 ${i + 1} 次试错：等待继续`);
         await sleep(submitDelay());
 
         if (i < user_config.loop - 1) {
-            await setStatus(`准备第 ${i + 2} 次试错`);
+            await setStatus(`第 ${i + 2} 次试错：准备开始`);
 
             await click_btn(); // Retry
             await sleep(submitDelay());
@@ -693,16 +707,17 @@ async function doDropChoose() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
-    await setStatus(`获取答案中...`);
+    await setStatus(`答题：获取答案`);
     let answer = [];
     $('.wy-lib-cs-key + span').each((i,item)=>{
         answer.push(item.innerText)
     });
     
+    await setStatus(`答题：准备提交答案`);
     await click_btn(); // Retry
     await sleep(submitDelay());
 
-    await setStatus(`提交答案中...`);
+    await setStatus(`答题：填写答案`);
     $('.ant-select-dropdown-menu').each((i,div)=>{
         $(div).find('li').each((index, item)=>{
             if($.trim(item.innerText) == answer[i]) {
@@ -712,6 +727,7 @@ async function doDropChoose() {
         });
     });
 
+    await setStatus(`答题：等待提交`);
     await sleep(inputDelay());
 }
 
@@ -730,6 +746,7 @@ async function doListenImgAnswer() {
         input_in(item, getRanPhrase());
     });
     
+    await setStatus(`答题：等待提交`);
     await sleep(inputDelay());
 }
 
@@ -739,18 +756,21 @@ async function doDrag() {
     let boxes = $('.lib-drag-box');
 
     for (let i = 0; i < user_config.loop; i++) {
-        await setStatus(`第 ${i + 1} 次试错`)
+        await setStatus(`第 ${i + 1} 次试错：填写答案`);
 
         for(let i=0;i<answerbox.length;i++) {
             await dragTo(boxes[i], answerbox[i]);
         };
 
+        await setStatus(`第 ${i + 1} 次试错：等待提交`);
         await sleep(inputDelay());
+        await setStatus(`第 ${i + 1} 次试错：提交答案`);
         await click_btn(); // Submit
+        await setStatus(`第 ${i + 1} 次试错：等待继续`);
         await sleep(submitDelay());
         
         if (i < user_config.loop - 1) {
-            await setStatus(`准备第 ${i + 2} 次试错`);
+            await setStatus(`第 ${i + 2} 次试错：准备开始`);
 
             await click_btn(); // Retry
             await sleep(submitDelay());
@@ -762,7 +782,7 @@ async function doDrag() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
-    await setStatus(`获取答案中...`);
+    await setStatus(`答题：获取答案`);
     let answer = [];
     $('.lib-drag-stu-info-answer').each((i,item)=>{
         let temp = [];
@@ -772,10 +792,11 @@ async function doDrag() {
         answer.push(temp)
     });
     
+    await setStatus(`答题：准备提交答案`);
     await click_btn(); // Retry
     await sleep(submitDelay());
 
-    await setStatus(`提交答案中...`);
+    await setStatus(`答题：填写答案`);
     let flag = []; // 保证每个托快只被托一次
     answerbox = $('.lib-drag-answer-list');
     boxes = $('.lib-drag-box');
@@ -792,6 +813,7 @@ async function doDrag() {
         }
     };
 
+    await setStatus(`答题：等待提交`);
     await sleep(inputDelay());
 }
 
@@ -815,17 +837,20 @@ async function doMutiChoose() {
     let answer_map = {'A':0, 'B':1, 'C':2, 'D':3, 'E':4, 'F':5, 'G':6, 'H':7, 'I':8, 'J':9}
 
     for (let i = 0; i < user_config.loop; i++) {
-        await setStatus(`第 ${i + 1} 次试错`)
+        await setStatus(`第 ${i + 1} 次试错：填写答案`);
 
         // 随机选择以获得正确答案
         $('.lib-single-item-img img').click()
         
+        await setStatus(`第 ${i + 1} 次试错：等待提交`);
         await sleep(inputDelay());
+        await setStatus(`第 ${i + 1} 次试错：提交答案`);
         await click_btn(); // Submit
+        await setStatus(`第 ${i + 1} 次试错：等待继续`);
         await sleep(submitDelay());
 
         if (i < user_config.loop - 1) {
-            await setStatus(`准备第 ${i + 2} 次试错`);
+            await setStatus(`第 ${i + 2} 次试错：准备开始`);
             await click_btn(); // Retry
             await sleep(submitDelay());
         }
@@ -833,21 +858,23 @@ async function doMutiChoose() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
-    await setStatus(`获取答案中...`);
+    await setStatus(`答题：获取答案`);
     let answer = []
     $('.lib-single-cs-answer').each((i,item)=>{
         answer.push(item.innerText)
     });
 
+    await setStatus(`答题：准备提交答案`);
     await click_btn(); // Retry
     await sleep(submitDelay());
 
-    await setStatus(`提交答案中...`);
+    await setStatus(`答题：填写答案`);
     $('.lib-single-box').each((i,item)=>{
         for(const answer_single of answer[i])
             $($(item).find('.lib-single-item')[answer_map[answer_single]]).find('img').click()
     });
 
+    await setStatus(`答题：等待提交`);
     await sleep(inputDelay());
 }
 
@@ -868,18 +895,21 @@ async function doTF() {
     })
 
     for (let i = 0; i < user_config.loop; i++) {
-        await setStatus(`第 ${i + 1} 次试错`)
+        await setStatus(`第 ${i + 1} 次试错：填写答案`);
         // 随机选择以获得正确答案
         $('.lib-judge-radio').each((i,item)=>{
             if((i+1)%columnsNum==1) item.click();
         })
 
+        await setStatus(`第 ${i + 1} 次试错：等待提交`);
         await sleep(inputDelay());
+        await setStatus(`第 ${i + 1} 次试错：提交答案`);
         await click_btn(); // Submit
+        await setStatus(`第 ${i + 1} 次试错：等待继续`);
         await sleep(submitDelay());
         
         if (i < user_config.loop - 1) {
-            await setStatus(`准备第 ${i + 2} 次试错`);
+            await setStatus(`第 ${i + 2} 次试错：准备开始`);
             await click_btn(); // Retry
             await sleep(submitDelay());
         }
@@ -887,17 +917,18 @@ async function doTF() {
         console.log('[~] 试错:', `结束第 ${i + 1} 次试错`)
     }
 
-    await setStatus(`获取答案中...`);
+    await setStatus(`答题：获取答案`);
     let answer = []
     $(".lib-judge-info .lib-judge-info-text").each((i,item)=>{
         answer.push(item.innerText);
     })
     //console.log(columns)
     // console.log(answer)
+    await setStatus(`答题：准备提交答案`);
     await click_btn(); // Retry
     await sleep(submitDelay());
 
-    await setStatus(`提交答案中...`);
+    await setStatus(`答题：填写答案`);
     let loop = 0
     let order = 0
     $('.lib-judge-radio').each((i,item)=>{
@@ -915,6 +946,7 @@ async function doTF() {
         }
     })
 
+    await setStatus(`答题：等待提交`);
     await sleep(inputDelay());
 }
 
@@ -940,6 +972,16 @@ async function doTopic() {
         console.log('[+] 题型:', t);
         $('#yun_status').text('当前题型：'+t);
     };
+
+    let redoTopic = false;
+    if (redoTopic == false && user_config.redo == true) {
+        redoTopic = true;
+        await setStatus(`重做：准备中`)
+        await sleep(submitDelay());
+        await setStatus(`重做：清除答案`)
+        await click_btn();
+        await setStatus(`重做：等待继续`)
+    }
 
     if($('.wy-course-btn-right').text().indexOf('Submit')==-1 && $('#J_prismPlayer').length==0) {
         // $('.page-next')[1].click();
@@ -1003,6 +1045,7 @@ async function initConf() {
     });
     $('#set_tryerr').prop("checked", user_config.autotryerr);
     $('#set_manu').prop("checked", user_config.autostop);
+    $('#set_redo').prop("checked", user_config.redo);
     $('#set_auto_record').prop("checked", user_config.autorecord);
     $('#set_delay').val(user_config.delay);
     $('#set_loop').val(user_config.loop);
@@ -1074,6 +1117,9 @@ function pageFullyLoaded () {
                 <br>
                 <input type="checkbox" id="set_manu">
                 <label for="set_manu">不支持题型停止</label>
+                <br>
+                <input type="checkbox" id="set_redo">
+                <label for="set_redo">重做已完成题目</label>
             </p>
             <label class="el-input el-input--mini">每题耗时(ms) <input class="el-input__inner" style="width: 50px;padding: 3px;" type="text" id="set_delay"></label>
             <br>
@@ -1147,6 +1193,7 @@ function pageFullyLoaded () {
         });
         user_config.autotryerr = $('#set_tryerr').prop("checked");
         user_config.autostop = $('#set_manu').prop("checked");
+        user_config.redo = $('#set_redo').prop("checked");
         user_config.autorecord = $('#set_auto_record').prop("checked");
         user_config.delay = $('#set_delay').val();
         user_config.loop = $('#set_loop').val();
