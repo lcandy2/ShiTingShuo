@@ -22,6 +22,7 @@ let user_config = {
     'autotryerr': true,
     'autostop': false,
     'autorecord': true,
+    'redo': false,
     'delay': 10000,
     'loop': 1
 };

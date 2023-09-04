@@ -12,6 +12,16 @@ async function doTopic() {
         $('#yun_status').text('当前题型：'+t);
     };
 
+    let redoTopic = false;
+    if (redoTopic == false && user_config.redo == true) {
+        redoTopic = true;
+        await DOM.setStatus(`重做：准备中`)
+        await sleep(submitDelay());
+        await DOM.setStatus(`重做：清除答案`)
+        await click_btn();
+        await DOM.setStatus(`重做：等待继续`)
+    }
+
     if($('.wy-course-btn-right').text().indexOf('Submit')==-1 && $('#J_prismPlayer').length==0) {
         // $('.page-next')[1].click();
         // await sleep(pageNextDelay());
@@ -74,6 +84,7 @@ async function initConf() {
     });
     $('#set_tryerr').prop("checked", user_config.autotryerr);
     $('#set_manu').prop("checked", user_config.autostop);
+    $('#set_redo').prop("checked", user_config.redo);
     $('#set_auto_record').prop("checked", user_config.autorecord);
     $('#set_delay').val(user_config.delay);
     $('#set_loop').val(user_config.loop);
@@ -145,6 +156,9 @@ function pageFullyLoaded () {
                 <br>
                 <input type="checkbox" id="set_manu">
                 <label for="set_manu">不支持题型停止</label>
+                <br>
+                <input type="checkbox" id="set_redo">
+                <label for="set_redo">重做已完成题目</label>
             </p>
             <label class="el-input el-input--mini">每题耗时(ms) <input class="el-input__inner" style="width: 50px;padding: 3px;" type="text" id="set_delay"></label>
             <br>
@@ -218,6 +232,7 @@ function pageFullyLoaded () {
         });
         user_config.autotryerr = $('#set_tryerr').prop("checked");
         user_config.autostop = $('#set_manu').prop("checked");
+        user_config.redo = $('#set_redo').prop("checked");
         user_config.autorecord = $('#set_auto_record').prop("checked");
         user_config.delay = $('#set_delay').val();
         user_config.loop = $('#set_loop').val();
