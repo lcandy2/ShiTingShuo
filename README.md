@@ -2,7 +2,7 @@
 
 # 视听说自动答题挂课助手
 
-[GitHub](https://github.com/lcandy2/ShiTingShuo) | [GreasyFork](https://greasyfork.org/zh-CN/scripts/474368-%E6%B8%85%E5%8D%8E%E7%A4%BE%E8%A7%86%E5%90%AC%E8%AF%B4-%E8%87%AA%E5%8A%A8%E7%AD%94%E9%A2%98-2023)
+[GitHub](https://github.com/lcandy2/ShiTingShuo) | [GreasyFork](https://greasyfork.org/zh-CN/scripts/474368-%E6%B8%85%E5%8D%8E%E7%A4%BE%E8%A7%86%E5%90%AC%E8%AF%B4-%E8%87%AA%E5%8A%A8%E7%AD%94%E9%A2%98-2023) | [ScriptCat](https://scriptcat.org/script-show-page/1268)
 
 > 适用于清华英语社 - 视听说
 >
@@ -12,7 +12,7 @@
 
 ## 使用
 
-* 点击上方按钮或点此[安装](https://github.com/lcandy2/ShiTingShuo/raw/master/dist/main.user.js)脚本
+* 点击上方按钮或点此[安装](https://github.com/lcandy2/ShiTingShuo/raw/main/dist/main.user.js)脚本
 
 注：需配合脚本管理器使用，推荐使用 [Tampermonkey](https://www.tampermonkey.net/)
 
