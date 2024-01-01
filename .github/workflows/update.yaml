@@ -58,7 +58,7 @@ jobs:
     - name: Download artifact
       uses: actions/download-artifact@v2
       with:
-        name: yunzhan-downloader
+        name: tsinghuaelt-workflow
         path: ./export/user-js/tsinghuaelt.com/
 
     - name: Commit and push to user.js
