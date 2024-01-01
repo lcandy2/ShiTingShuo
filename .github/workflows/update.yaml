@@ -67,4 +67,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         repository: lcandy2/user.js
         directory: ./export/user-js
-        message: 'action: Update YunZhanDownloader'
+        message: 'action: Update TsingHuaELT-Workflow'
